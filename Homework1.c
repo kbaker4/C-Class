@@ -23,7 +23,7 @@ int main()
 	int clockNumber = 0; /* Employee clock number */
 	float grossPay = 0; /* The gross pay for that employee for that week */
 	float hours = 0; /* The number of hours worked */
-	int numberOfEmployees = 0; /* The number of employees to process */
+	int numberOfEmployees; /* The number of employees to process */
 	FILE *outputfileptr; /* Pointer to the output file */
 	float wage = 0; /* The wage of the employee */
 
