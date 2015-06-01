@@ -27,10 +27,10 @@ int main()
   /* declaring variables needed for program       */
   long  int clockNumber[SIZE] = { 98401, 526488, 765349, 34645, 127615 }; /* form of worker identification */
   int   count;                                                            /* loop index */
-  float wage[SIZE] = { 10.6, 9.75, 10.5, 12.25, 8.35 };              /* money earned per hour of work */
+  float gross[SIZE];                                                      /* Gross pay for the employee */
   float hours[SIZE];                                                      /* Number of hours worked */
   float overtime[SIZE]  { };                                                   /* Number of overtime hours */
-  float gross[SIZE];                                                      /* Gross pay for the employee */
+  float wage[SIZE] = { 10.6, 9.75, 10.5, 12.25, 8.35 };              /* money earned per hour of work */
 
   /* Process each employee one at a time */
   for (count = 0; count < SIZE; count++)
