@@ -6,7 +6,7 @@
 //                                                    
 // Class: C Programming                               
 //                                                    
-// Date: 8 July, 2015                                 
+// Date: 9 July, 2015                                 
 //                                                    
 // Description: Employee pay calculator. This program 
 // calculates the gross pay based on hours worked     
@@ -16,10 +16,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
-/* constants to use */
-#define SIZE 5            /* employees to process */
-#define OT_FACTOR 1.5
-#define STD_HOURS 40
+// constants to use 
+#define SIZE 5            // employees to process 
+#define OT_FACTOR 1.5     // rate for overtime pay increase
+#define STD_HOURS 40      // anything over this is overtime
 
 struct Employee
 {
@@ -72,25 +72,16 @@ void getTotals(struct Employee *emps, struct Totals *totals);
 void printTotals(struct Totals *totals);
 
 // Functions for Averages struct
-struct Averages getAverageWage(struct Employee emps[], struct Averages averages);
-struct Averages getAverageHours(struct Employee emps[], struct Averages averages);
-struct Averages getAverageOvertime(struct Employee emps[], struct Averages averages);
-struct Averages getAverageGross(struct Employee emps[], struct Averages averages);
-void printAverages(struct Averages averages);
+void getAverages(struct Employee *emps, struct Averages *averages);
+void printAverages(struct Averages *averages);
 
 // Functions for Mins struct
-struct Mins getMinWage(struct Employee emps[], struct Mins mins);
-struct Mins getMinHours(struct Employee emps[], struct Mins mins);
-struct Mins getMinOvertime(struct Employee emps[], struct Mins mins);
-struct Mins getMinGross(struct Employee emps[], struct Mins mins);
-void printMins(struct Mins mins);
+void getMins(struct Employee *emps, struct Mins *mins);
+void printMins(struct Mins *mins);
 
 // Functions for Maxes struct
-struct Maxes getMaxWage(struct Employee emps[], struct Maxes maxes);
-struct Maxes getMaxHours(struct Employee emps[], struct Maxes maxes);
-struct Maxes getMaxOvertime(struct Employee emps[], struct Maxes maxes);
-struct Maxes getMaxGross(struct Employee emps[], struct Maxes maxes);
-void printMaxes(struct Maxes maxes);
+void getMaxes(struct Employee *emps, struct Maxes *maxes);
+void printMaxes(struct Maxes *maxes);
 
 int main()
 {
@@ -101,44 +92,33 @@ int main()
                                  { "Anton Pascal", 127615, 10.00 } };
   
   struct Totals totals[4] = { 0, 0, 0, 0 };
-  struct Averages averages = { 0, 0, 0, 0 };
-  struct Mins mins = { 0, 0, 0, 0 };
-  struct Maxes maxes = { 0, 0, 0, 0 };
+  struct Averages averages[4] = { 0, 0, 0, 0 };
+  struct Mins mins[4] = { 0, 0, 0, 0 };
+  struct Maxes maxes[4] = { 0, 0, 0, 0 };
 
   getHours(emps);
-  getOvertimeHours(emps);  /* Calculate total amount of overtime hours */
-  getOvertimePay(emps);  /* Calculate total amount of overtime pay, if necessary */
-  getGross(emps); /* Calculate gross pay */
-  printData(emps);
+  getOvertimeHours(emps);  // Calculate total amount of overtime hours 
+  getOvertimePay(emps);  // Calculate total amount of overtime pay, if necessary 
+  getGross(emps); // Calculate gross pay 
+  printData(emps); // Print everything
 
   printf(" ------------------------------------------------------------------- \n");
 
   // Get all the totals and print them out
   getTotals(emps, totals);
   printTotals(totals);
-  /*
+
   // Get all the averages and print them out
-  averages = getAverageWage(emps, averages);
-  averages = getAverageHours(emps, averages);
-  averages = getAverageOvertime(emps, averages);
-  averages = getAverageGross(emps, averages);
+  getAverages(emps, averages);
   printAverages(averages);
-  
+
   // Get all the mins and print them out
-  mins = getMinWage(emps, mins);
-  mins = getMinHours(emps, mins);
-  mins = getMinOvertime(emps, mins);
-  mins = getMinGross(emps, mins);
+  getMins(emps, mins);
   printMins(mins);
 
   // Get all the maxes and print them out
-  maxes = getMaxWage(emps, maxes);
-  maxes = getMaxHours(emps, maxes);
-  maxes = getMaxOvertime(emps, maxes);
-  maxes = getMaxGross(emps, maxes);
+  getMaxes(emps, maxes);
   printMaxes(maxes);
-  */
-  return; // main
 } // end main
 
 //**************************************************************/ 
@@ -254,8 +234,6 @@ void printData(struct Employee *emps){
       emps->name, emps->clockNumber, emps->wage, emps->hours, emps->overtime, emps->gross);
     emps++;
   }
-
-  return;
 }
 
 //**************************************************************/ 
@@ -295,80 +273,30 @@ void printTotals(struct Totals *totals){
 }
 
 //**************************************************************/ 
-// Function: getAverageWage
-// 
-// Purpose: Calculates the average wage for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Averages    
-// 
-// Returns: struct Average averages
-//**************************************************************/ 
-struct Averages getAverageWage(struct Employee emps[], struct Averages averages){
-  float tmp = 0;
-  for (int i = 0; i < SIZE; ++i)
-    tmp += emps[i].wage;
-  averages.averageWage = tmp / SIZE;
-  return averages;
-}
-
-//**************************************************************/ 
-// Function: getAverageHours
-// 
-// Purpose: Calculates the average hours for 
-// all employees
+// Function: getAverages
+//
+// Purpose: Calculates the average Wage, Hours, Overtime and Gross
+// for each employee
 // 
 // Parameters: 
-// struct of type Employee, struct of type Averages    
+// Employee struct pointer and Averages struct pointer    
 // 
-// Returns: struct Average averages
-//**************************************************************/ 
-struct Averages getAverageHours(struct Employee emps[], struct Averages averages){
-  float tmp = 0;
-  for (int i = 0; i < SIZE; ++i)
-    tmp += emps[i].hours;
-  averages.averageHours = tmp / SIZE;
-  return averages;
-}
-
-//**************************************************************/ 
-// Function: getAverageOvertime
-// 
-// Purpose: Calculates the average overtime hours for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Averages    
-// 
-// Returns: struct Average averages
-//**************************************************************/ 
-struct Averages getAverageOvertime(struct Employee emps[], struct Averages averages){
-  float tmp = 0;
-  for (int i = 0; i < SIZE; ++i)
-    tmp += emps[i].overtime;
-  averages.averageOvertime = tmp / SIZE;
-  return averages;
-}
-
-//**************************************************************/ 
-// Function: getAverageGross
-// 
-// Purpose: Calculates the average gross pay for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Averages    
-// 
-// Returns: struct Average averages
+// Returns: Nothing
 //**************************************************************/
-struct Averages getAverageGross(struct Employee emps[], struct Averages averages){
-  float tmp = 0;
-  for (int i = 0; i < SIZE; ++i)
-    tmp += emps[i].gross;
-  averages.averageGross = tmp / SIZE;
-  return averages;
-}
+void getAverages(struct Employee *emps, struct Averages *averages){
+  float tmp[4] = { 0, 0, 0, 0 }; // order for array is Wage, Hours, Overtime(hours), and Gross
+  for (int i = 0; i < SIZE; i++){
+    tmp[0] += emps->wage;
+    tmp[1] += emps->hours;
+    tmp[2] += emps->overtime;
+    tmp[3] += emps->gross;
+    emps++;
+  }
+  averages->averageWage = tmp[0] / SIZE;
+  averages->averageHours = tmp[1] / SIZE;
+  averages->averageOvertime = tmp[2] / SIZE;
+  averages->averageGross = tmp[3] / SIZE;
+} // end getAverages
 
 //**************************************************************/ 
 // Function: printAverages
@@ -376,94 +304,44 @@ struct Averages getAverageGross(struct Employee emps[], struct Averages averages
 // Purpose: Nicely prints all averages
 // 
 // Parameters: 
-// struct of type Averages    
+// Averages struct pointer   
 // 
 // Returns: Nothing
 //**************************************************************/
-void printAverages(struct Averages averages){
+void printAverages(struct Averages *averages){
   printf(" Averages: %23.2f %10.1f %10.1f %10.2f\n",
-    averages.averageWage, averages.averageHours, averages.averageOvertime, averages.averageGross);
-  return;
+    averages->averageWage, averages->averageHours, averages->averageOvertime, averages->averageGross);
 }
 
 //**************************************************************/ 
-// Function: getMinWage
+// Function: getMins
 // 
-// Purpose: Calculates the min wage for 
-// all employees
+// Purpose: get the min number of wages, hours, overtime(hours) 
+// and gross
 // 
 // Parameters: 
-// struct of type Employee, struct of type Mins    
+// struct Employee pointer, struct Mins pointer   
 // 
-// Returns: struct Mins mins
+// Returns: Nothing
 //**************************************************************/
-struct Mins getMinWage(struct Employee emps[], struct Mins mins){
-  mins.minWage = emps[0].wage;
-  for (int i = 1; i < SIZE; ++i){
-    if (emps[i].wage < mins.minWage)
-      mins.minWage = emps[i].wage;
-  }
-  return mins;
-}
+void getMins(struct Employee *emps, struct Mins *mins){
+  mins->minWage = emps->wage;
+  mins->minHours = emps->hours;
+  mins->minOvertime = emps->overtime;
+  mins->minGross = emps->gross;
+  emps++;
 
-//**************************************************************/ 
-// Function: getMinHours
-// 
-// Purpose: Calculates the min hours for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Mins    
-// 
-// Returns: struct Mins mins
-//**************************************************************/
-struct Mins getMinHours(struct Employee emps[], struct Mins mins){
-  mins.minHours = emps[0].hours;
-  for (int i = 1; i < SIZE; ++i){
-    if (emps[i].hours < mins.minHours)
-      mins.minHours = emps[i].hours;
-  }
-  return mins;
-}
-
-//**************************************************************/ 
-// Function: getMinOvertime
-// 
-// Purpose: Calculates the min overtime hours for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Mins    
-// 
-// Returns: struct Mins mins
-//**************************************************************/
-struct Mins getMinOvertime(struct Employee emps[], struct Mins mins){
-  mins.minOvertime = emps[0].overtime;
-  for (int i = 1; i < SIZE; ++i){
-    if (emps[i].overtime < mins.minOvertime)
-      mins.minOvertime = emps[i].overtime;
-  }
-  return mins;
-}
-
-//**************************************************************/ 
-// Function: getMinGross
-// 
-// Purpose: Calculates the min gross for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Mins    
-// 
-// Returns: struct Mins mins
-//**************************************************************/
-struct Mins getMinGross(struct Employee emps[], struct Mins mins){
-  mins.minGross = emps[0].gross;
-  for (int i = 1; i < SIZE; ++i){
-    if (emps[i].gross < mins.minGross)
-      mins.minGross = emps[i].gross;
-  }
-  return mins;
+  while (emps->hours > 0 && emps->hours < 150) {
+    if (emps->wage < mins->minWage)
+      mins->minWage = emps->wage;
+    if (emps->hours < mins->minHours)
+      mins->minHours = emps->hours;
+    if (emps->overtime < mins->minOvertime)
+      mins->minOvertime = emps->overtime;
+    if (emps->gross < mins->minOvertime)
+      mins->minOvertime = emps->gross;
+    emps++;
+  } ;
 }
 
 //**************************************************************/ 
@@ -476,90 +354,40 @@ struct Mins getMinGross(struct Employee emps[], struct Mins mins){
 // 
 // Returns: Nothing
 //**************************************************************/
-void printMins(struct Mins mins){
+void printMins(struct Mins *mins){
   printf(" Mins: %27.2f %10.1f %10.1f %10.2f\n",
-    mins.minWage, mins.minHours, mins.minOvertime, mins.minGross);
-  return;
+    mins->minWage, mins->minHours, mins->minOvertime, mins->minGross);
 }
 
 //**************************************************************/ 
-// Function: getMaxWage
+// Function: getMaxes
 // 
-// Purpose: Calculates the max wage for 
-// all employees
+// Purpose: get the max number of wages, hours, overtime(hours) 
+// and gross
 // 
 // Parameters: 
-// struct of type Employee, struct of type Maxes    
+// struct Employee pointer, struct Maxes pointer    
 // 
-// Returns: struct Maxes maxes
+// Returns: Nothing
 //**************************************************************/
-struct Maxes getMaxWage(struct Employee emps[], struct Maxes maxes){
-  maxes.maxWage = emps[0].wage;
-  for (int i = 1; i < SIZE; ++i){
-    if (emps[i].wage > maxes.maxWage)
-      maxes.maxWage = emps[i].wage;
-  }
-  return maxes;
-}
+void getMaxes(struct Employee *emps, struct Maxes *maxes){
+  maxes->maxWage = emps->wage;
+  maxes->maxHours = emps->hours;
+  maxes->maxOvertime = emps->overtime;
+  maxes->maxGross = emps->gross;
+  emps++;
 
-//**************************************************************/ 
-// Function: getMaxHours
-// 
-// Purpose: Calculates the max hours for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Maxes    
-// 
-// Returns: struct Maxes maxes
-//**************************************************************/
-struct Maxes getMaxHours(struct Employee emps[], struct Maxes maxes){
-  maxes.maxHours = emps[0].hours;
-  for (int i = 1; i < SIZE; ++i){
-    if (emps[i].hours > maxes.maxHours)
-      maxes.maxHours = emps[i].hours;
+  while (emps->hours > 0 && emps->hours < 150){
+    if (emps->wage > maxes->maxWage)
+      maxes->maxWage = emps->wage;
+    if (emps->hours > maxes->maxHours)
+      maxes->maxHours = emps->hours;
+    if (emps->overtime > maxes->maxOvertime)
+      maxes->maxOvertime = emps->overtime;
+    if (emps->gross > maxes->maxGross)
+      maxes->maxGross = emps->gross;
+    emps++;
   }
-  return maxes;
-}
-
-//**************************************************************/ 
-// Function: getMaxOvertime
-// 
-// Purpose: Calculates the max overtime hours for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Maxes    
-// 
-// Returns: struct Maxes maxes
-//**************************************************************/
-struct Maxes getMaxOvertime(struct Employee emps[], struct Maxes maxes){
-  maxes.maxOvertime = emps[0].overtime;
-  for (int i = 1; i < SIZE; ++i){
-    if (emps[i].overtime > maxes.maxOvertime)
-      maxes.maxOvertime = emps[i].overtime;
-  }
-  return maxes;
-}
-
-//**************************************************************/ 
-// Function: getMaxGross
-// 
-// Purpose: Calculates the max gross for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Maxes    
-// 
-// Returns: struct Maxes maxes
-//**************************************************************/
-struct Maxes getMaxGross(struct Employee emps[], struct Maxes maxes){
-  maxes.maxGross = emps[0].gross;
-  for (int i = 1; i < SIZE; ++i){
-    if (emps[i].gross > maxes.maxGross)
-      maxes.maxGross = emps[i].gross;
-  }
-  return maxes;
 }
 
 //**************************************************************/ 
@@ -572,8 +400,7 @@ struct Maxes getMaxGross(struct Employee emps[], struct Maxes maxes){
 // 
 // Returns: Nothing
 //**************************************************************/
-void printMaxes(struct Maxes maxes){
+void printMaxes(struct Maxes *maxes){
   printf(" Maxes: %26.2f %10.1f %10.1f %10.2f\n",
-    maxes.maxWage, maxes.maxHours, maxes.maxOvertime, maxes.maxGross);
-  return;
+    maxes->maxWage, maxes->maxHours, maxes->maxOvertime, maxes->maxGross);
 }
