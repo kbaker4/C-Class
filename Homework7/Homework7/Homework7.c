@@ -62,17 +62,14 @@ struct Maxes{
 
 // Functions for Employee struct
 void getHours(struct Employee *emps);
-void printData(struct Employee emps[]);
 void getGross(struct Employee *emps);
 void getOvertimeHours(struct Employee *emps);
 void getOvertimePay(struct Employee *emps);
+void printData(struct Employee *emps);
 
 // Functions for Totals struct
-struct Totals getTotalWage(struct Employee emps[], struct Totals totals);
-struct Totals getTotalHours(struct Employee emps[], struct Totals totals);
-struct Totals getTotalOvertime(struct Employee emps[], struct Totals totals);
-struct Totals getTotalGross(struct Employee emps[], struct Totals totals);
-void printTotals(struct Totals totals);
+void getTotals(struct Employee *emps, struct Totals *totals);
+void printTotals(struct Totals *totals);
 
 // Functions for Averages struct
 struct Averages getAverageWage(struct Employee emps[], struct Averages averages);
@@ -103,7 +100,7 @@ int main()
                                  { "Jeff Ada", 34645, 12.25 },
                                  { "Anton Pascal", 127615, 10.00 } };
   
-  struct Totals totals = { 0, 0, 0, 0 };
+  struct Totals totals[4] = { 0, 0, 0, 0 };
   struct Averages averages = { 0, 0, 0, 0 };
   struct Mins mins = { 0, 0, 0, 0 };
   struct Maxes maxes = { 0, 0, 0, 0 };
@@ -117,19 +114,16 @@ int main()
   printf(" ------------------------------------------------------------------- \n");
 
   // Get all the totals and print them out
-  totals = getTotalWage(emps, totals);
-  totals = getTotalHours(emps, totals);
-  totals = getTotalOvertime(emps, totals);
-  totals = getTotalGross(emps, totals);
+  getTotals(emps, totals);
   printTotals(totals);
-
+  /*
   // Get all the averages and print them out
   averages = getAverageWage(emps, averages);
   averages = getAverageHours(emps, averages);
   averages = getAverageOvertime(emps, averages);
   averages = getAverageGross(emps, averages);
   printAverages(averages);
-
+  
   // Get all the mins and print them out
   mins = getMinWage(emps, mins);
   mins = getMinHours(emps, mins);
@@ -143,9 +137,9 @@ int main()
   maxes = getMaxOvertime(emps, maxes);
   maxes = getMaxGross(emps, maxes);
   printMaxes(maxes);
-
-  return;
-}
+  */
+  return; // main
+} // end main
 
 //**************************************************************/ 
 // Function: getHours 
@@ -245,7 +239,7 @@ void getGross(struct Employee *emps){
 // Returns: Nothing (call by reference)
 //  
 //**************************************************************/ 
-void printData(struct Employee emps[]){
+void printData(struct Employee *emps){
 
   /* Print a nice table header */
   printf("\n\n -------------------------------------------------------------------\n");
@@ -257,78 +251,32 @@ void printData(struct Employee emps[]){
   {
     /* print employee information from your arrays */
     printf(" %-15s %.06i %10.2f %10.1f %10.1f %10.2f\n",
-      emps[i].name, emps[i].clockNumber, emps[i].wage, emps[i].hours, emps[i].overtime, emps[i].gross);
+      emps->name, emps->clockNumber, emps->wage, emps->hours, emps->overtime, emps->gross);
+    emps++;
   }
 
   return;
 }
 
 //**************************************************************/ 
-// Function: getTotalWage
+// Function: getTotals
 // 
-// Purpose: Calculates the Total Wage for 
-// all employees
+// Purpose: Calculates all totals for all employees
 // 
 // Parameters: 
-// struct of type Employee, struct of type Totals  
+// pointer to struct of type Employee, 
+// pointer to struct of type Totals  
 // 
 // Returns:  struct Total totals
 //**************************************************************/ 
-struct Totals getTotalWage(struct Employee emps[], struct Totals totals){
-  for (int i = 0; i < SIZE; ++i)
-    totals.totalWage += emps[i].wage;
-  return totals;
-}
-
-//**************************************************************/ 
-// Function: getTotalHours
-// 
-// Purpose: Calculates the Total Hours for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Totals    
-// 
-// Returns:  struct Total totals
-//**************************************************************/ 
-struct Totals getTotalHours(struct Employee emps[], struct Totals totals){
-  for (int i = 0; i < SIZE; ++i)
-    totals.totalHours += emps[i].hours;
-  return totals;
-}
-
-//**************************************************************/ 
-// Function: getTotalOvertime
-// 
-// Purpose: Calculates the Total Overtime for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Totals    
-// 
-// Returns:  struct Total totals
-//**************************************************************/ 
-struct Totals getTotalOvertime(struct Employee emps[], struct Totals totals){
-  for (int i = 0; i < SIZE; ++i)
-    totals.totalOvertime += emps[i].overtime;
-  return totals;
-}
-
-//**************************************************************/ 
-// Function: getTotalGross
-// 
-// Purpose: Calculates the Total Gross for 
-// all employees
-// 
-// Parameters: 
-// struct of type Employee, struct of type Totals    
-// 
-// Returns: struct Total totals
-//**************************************************************/ 
-struct Totals getTotalGross(struct Employee emps[], struct Totals totals){
-  for (int i = 0; i < SIZE; ++i)
-    totals.totalGross += emps[i].gross;
-  return totals;
+void getTotals(struct Employee *emps, struct Totals *totals){
+  for (int i = 0; i < SIZE; ++i){
+    totals->totalWage += emps->wage;
+    totals->totalHours += emps->hours;
+    totals->totalOvertime += emps->overtimePay;
+    totals->totalGross += emps->gross;
+    emps++;
+  }
 }
 
 //**************************************************************/ 
@@ -341,9 +289,9 @@ struct Totals getTotalGross(struct Employee emps[], struct Totals totals){
 // 
 // Returns: struct Total totals
 //**************************************************************/ 
-void printTotals(struct Totals totals){
-  printf(" Totals: %25.2f %10.1f %10.1f %10.2f\n",
-    totals.totalWage, totals.totalHours, totals.totalOvertime, totals.totalGross);
+void printTotals(struct Totals *totals){
+    printf(" Totals: %25.2f %10.1f %10.1f %10.2f\n",
+      totals->totalWage, totals->totalHours, totals->totalOvertime, totals->totalGross);
 }
 
 //**************************************************************/ 
