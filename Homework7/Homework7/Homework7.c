@@ -63,9 +63,9 @@ struct Maxes{
 // Functions for Employee struct
 void getHours(struct Employee *emps);
 void printData(struct Employee emps[]);
-float getGross(struct Employee *emps);
-float getOvertimeHours(struct Employee *emps);
-float getOvertimePay(struct Employee *emps);
+void getGross(struct Employee *emps);
+void getOvertimeHours(struct Employee *emps);
+void getOvertimePay(struct Employee *emps);
 
 // Functions for Totals struct
 struct Totals getTotalWage(struct Employee emps[], struct Totals totals);
@@ -108,10 +108,10 @@ int main()
   struct Mins mins = { 0, 0, 0, 0 };
   struct Maxes maxes = { 0, 0, 0, 0 };
 
-    getHours(emps);
-    emps->overtime = getOvertimeHours(emps);  /* Calculate total amount of overtime hours */
-    emps->overtimePay = getOvertimePay(emps);  /* Calculate total amount of overtime pay, if necessary */
-    emps->gross = getGross(emps); /* Calculate gross pay */
+  getHours(emps);
+  getOvertimeHours(emps);  /* Calculate total amount of overtime hours */
+  getOvertimePay(emps);  /* Calculate total amount of overtime pay, if necessary */
+  getGross(emps); /* Calculate gross pay */
   printData(emps);
 
   printf(" ------------------------------------------------------------------- \n");
@@ -161,7 +161,7 @@ void getHours(struct Employee *emps){
   /* Read in hours worked for employee */
   for (int i = 0; i < SIZE; i++){
     printf("Enter the number of hours worked by emp # %06i: ", emps->clockNumber);
-    scanf("%f", emps->hours);
+    scanf("%f", &emps->hours);
     ++emps;
   }
 }
@@ -177,14 +177,15 @@ void getHours(struct Employee *emps){
 // Returns: otHours - overtime hours worked
 //  
 //**************************************************************/ 
-float getOvertimeHours(struct Employee *emps){
+void getOvertimeHours(struct Employee *emps){
   float otHours; /* Amount of overtime worked */
-  if (emps->hours > STD_HOURS)
-    otHours = emps->hours - 40;
-  else
-    otHours = 0;
-
-  return otHours;
+  for (int i = 0; i < SIZE; i++){
+    if (emps->hours > STD_HOURS)
+      emps->overtime = emps->hours - 40;
+    else
+      emps->overtime = 0;
+    emps++;
+  }
 }
 
 //**************************************************************/ 
@@ -198,15 +199,15 @@ float getOvertimeHours(struct Employee *emps){
 // Returns: otPay - overtime pay received
 //  
 //**************************************************************/ 
-float getOvertimePay(struct Employee *emps){
+void getOvertimePay(struct Employee *emps){
   float otPay; /* Amount of overtime pay the employee receives, if any */
-
+  for (int i = 0; i < SIZE; i++){
     if (emps->overtime > 0)
       otPay = OT_FACTOR * emps->wage * emps->overtime;
     else
       otPay = 0;
-
-  return otPay;
+    emps++;
+  }
 }
 
 //**************************************************************/ 
@@ -220,15 +221,15 @@ float getOvertimePay(struct Employee *emps){
 // Returns: gross - gross pay for employee
 //  
 //**************************************************************/ 
-float getGross(struct Employee *emps){
+void getGross(struct Employee *emps){
   float gross;  /* Total gross pay for employee */
-
+  for (int i = 0; i < SIZE; i++){
     if (emps->overtimePay == 0)
-      gross = emps->hours * emps->wage;
+      emps->gross = emps->hours * emps->wage;
     else
-      gross = STD_HOURS * emps->wage + emps->overtimePay;
-
-  return gross;
+      emps->gross = STD_HOURS * emps->wage + emps->overtimePay;
+    emps++;
+  }
 }
 
 //**************************************************************/ 
