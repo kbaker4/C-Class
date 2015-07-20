@@ -155,7 +155,7 @@ void getOvertimeHours(struct Employee *emps){
   float otHours; /* Amount of overtime worked */
   for (int i = 0; i < SIZE; i++){
     if (emps->hours > STD_HOURS)
-      emps->overtime = emps->hours - 40;
+      (*emps).overtime = emps->hours - 40;
     else
       emps->overtime = 0;
     emps++;
